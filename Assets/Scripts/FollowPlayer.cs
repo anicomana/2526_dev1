@@ -31,5 +31,6 @@ public class FollowPlayer : MonoBehaviour
     void LateUpdate()
     {
         transform.position = followObject.transform.position + offset;
+        transform.eulerAngles = new Vector3(transform.eulerAngles.x, followObject.transform.eulerAngles.y, transform.eulerAngles.z);
     }
 }

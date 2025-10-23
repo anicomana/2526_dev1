@@ -7,10 +7,11 @@ public class PlayerController : MonoBehaviour
     public float turnSpeed = 50.0f;
     private float horizontalInput;
     private float verticalInput;
+    private Vector3 lastPosition;
 
     [Header("Jump")]
     public float jumpVelocity = 6.5f;
-    public float groundCheckDistance = 0.6f;
+    public float groundCheckDistance = 0.9f;
     private float jumpInput;
 
     Rigidbody rb;
@@ -29,6 +30,8 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogError("PlayerController: Rigidbody component not found.");
         }
+
+        lastPosition = transform.position;
     }
 
     // Update is called once per frame
@@ -41,18 +44,27 @@ public class PlayerController : MonoBehaviour
         // Move the vehicle
         transform.Translate(Vector3.forward * Time.deltaTime * verticalSpeed * verticalInput );
 
-        // Turn the vehicle 
-        transform.Rotate(Vector3.up * Time.deltaTime * turnSpeed * horizontalInput);
+        // Turn the vehicle
+        Vector3 deltaPosition = transform.position - lastPosition;
+        lastPosition = transform.position;
+
+        if (deltaPosition != Vector3.zero || !IsGrounded())
+        {
+            transform.Rotate(Vector3.up * Time.deltaTime * turnSpeed * horizontalInput);
+        }
+        
+
+        Debug.Log("isGrounded? " + IsGrounded());
 
         // Jump the vehicle
         if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
         {
-            var v = rb.linearVelocity;
-            if (v.y < 0) v.y = 0;
+            var originalVelocity = rb.linearVelocity;
 
-            rb.linearVelocity = new Vector3(v.x, jumpVelocity, v.z);
+            rb.linearVelocity = new Vector3(originalVelocity.x, jumpVelocity, originalVelocity.z);
         }
     }
+
     bool IsGrounded()
     {
         return Physics.Raycast(transform.position, Vector3.down, groundCheckDistance);

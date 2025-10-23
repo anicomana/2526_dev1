@@ -1,29 +1,25 @@
-using NUnit.Framework;
-using System.Collections.Generic;
-using UnityEditor.Rendering;
 using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
-    public List<Camera> cameras;
+    public Camera cam1;
+    public Camera cam2;
 
-    private int currentCamera;
-
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        foreach (Camera camera in cameras)
-            camera.enabled = false;
+        cam1.enabled = true;
+        cam2.enabled = false;
 
-        cameras[0].enabled = true;
-        currentCamera = 0;
     }
 
+    // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.C)== true)
+        if (Input.GetKeyDown(KeyCode.C))
         {
-            currentCamera.enabled = false;
-
-            currentCamera = (currentCamera + 1) % 2;
+            cam1.enabled = !cam1.enabled;
+            cam2.enabled = !cam2.enabled;
         }
+    }
 }
